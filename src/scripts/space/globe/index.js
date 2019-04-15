@@ -1,20 +1,20 @@
 import {
   SceneBuilder
 }
-from '~/scripts/globe/scene.js';
+from '~/scripts/space/globe/scene.js';
 import {
   camera,
   moveCamera,
   moveCameraFromCenterToLeft,
   moveCameraFromLeftToCenter
 }
-from '~/scripts/globe/camera.js';
+from '~/scripts/space/globe/camera.js';
 import {
   renderer,
 }
-from '~/scripts/globe/renderer.js';
+from '~/scripts/space/globe/renderer.js';
 
-export default {
+export {
   SceneBuilder,
   camera,
   renderer,

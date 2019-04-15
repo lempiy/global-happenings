@@ -23,10 +23,19 @@ import {
   Vector3,
   Vector2
 } from "three";
-import { glowMaterial } from "~/scripts/globe/shaders";
-import { camera } from "~/scripts/globe/camera";
-import { TweenLite } from "gsap/TweenLite";
-import { Sine, Back } from "gsap";
+import {
+  glowMaterial
+} from "~/scripts/space/globe/shaders";
+import {
+  camera
+} from "~/scripts/space/globe/camera";
+import {
+  TweenLite
+} from "gsap/TweenLite";
+import {
+  Sine,
+  Back
+} from "gsap";
 
 let root;
 
@@ -122,13 +131,11 @@ export class SceneBuilder {
 
   turnGlobe(x, y) {
     return new Promise(resolve => {
-      TweenLite.to(
-        {
+      TweenLite.to({
           turnY: this.root.rotation.y,
           turnX: this.root.rotation.x
         },
-        1.3,
-        {
+        1.3, {
           turnY: y,
           turnX: x,
           ease: Back.easeInOut,

@@ -27,9 +27,10 @@ const centerQ = new Quaternion().copy(camera.quaternion);
 const centerEuler = new Euler(0.0, 0.0, 0.0);
 const centerZoom = cameraZoom;
 const leftQ = new Quaternion().setFromEuler(new Euler(0.0, 0.8, 0.0));
-const leftEuler = new Euler(0.0, 0.8, 0.0);
+const leftEuler = () => new Euler(0.0, 0.8, 0.0);
+console.log(camera.aspect)
 const leftZoom = 600;
-
+console.log(leftEuler);
 
 // set a new target for the camera
 export function moveCamera(euler, zoom) {
@@ -61,7 +62,7 @@ export function moveCameraFromCenterToLeft() {
   curQ = new Quaternion();
   vec3 = new Vector3();
   tweenValue = 0;
-  endQ.setFromEuler(leftEuler);
+  endQ.setFromEuler(leftEuler());
   return new Promise(resolve => {
     TweenLite.to({
       value: 0,
