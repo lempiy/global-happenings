@@ -2,7 +2,8 @@ import {
   ShaderMaterial,
   Color,
   BackSide,
-  AdditiveBlending
+  AdditiveBlending,
+  NormalBlending
 } from 'three';
 
 export const atmosphere = {
@@ -22,6 +23,55 @@ export const atmosphere = {
     '}'
   ].join('\n')
 };
+
+
+const particleVertexShader = 
+[
+"varying vec4  vColor;",
+"varying float vAngle;",
+"void main()",
+"{",
+	"vColor = vec4( 1.0, 1.0, 1.0, 1.0 );", //     set color associated to vertex; use later in fragment shader.
+		
+	"vAngle = 1.2;",
+
+	"vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );",
+	"gl_PointSize = 18.0 * ( 350.0 / length( mvPosition.xyz ) );",     // scale particles as objects in 3D space
+	"gl_Position = projectionMatrix * mvPosition;",
+"}"
+].join("\n");
+
+const particleFragmentShader =
+[
+"uniform sampler2D texture;",
+"varying vec4 vColor;", 	
+"varying float vAngle;",   
+"void main()", 
+"{",
+	"gl_FragColor = vColor;",
+	
+	"float c = cos(vAngle);",
+	"float s = sin(vAngle);",
+	"vec2 rotatedUV = vec2(c * (gl_PointCoord.x - 0.5) + s * (gl_PointCoord.y - 0.5) + 0.5,", 
+	                      "c * (gl_PointCoord.y - 0.5) - s * (gl_PointCoord.x - 0.5) + 0.5);",  // rotate UV coordinates to rotate texture
+    	"vec4 rotatedTexture = texture2D( texture,  rotatedUV );",
+	"gl_FragColor = gl_FragColor * rotatedTexture;",    // sets an otherwise white particle texture to desired color
+"}"
+].join("\n");
+
+export function particleMaterial(particleTexture) {
+  return new ShaderMaterial( 
+    {
+      uniforms: 
+      {
+        texture:   { type: "t", value: particleTexture },
+      },
+      vertexShader:   particleVertexShader,
+      fragmentShader: particleFragmentShader,
+      transparent: true,  alphaTest: 0.5, // if having transparency issues, try including: alphaTest: 0.5, 
+      blending: NormalBlending, depthTest: true
+    });
+}
 
 export function glowMaterial(intensity, fade, color, camera) {
   // Custom glow shader from https://github.com/stemkoski/stemkoski.github.com/tree/master/Three.js

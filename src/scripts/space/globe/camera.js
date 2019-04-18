@@ -19,18 +19,18 @@ let endQ; // target quaternion
 let curQ; // temp quaternion during slerp
 let vec3; // generic vector object
 let tweenValue; // tweenable value 
-camera.position.copy(new Vector3(0, 0, 500));
+camera.position.copy(new Vector3(0, 0, 700));
 cameraPos0 = camera.position.clone();
 cameraUp0 = camera.up.clone();
 cameraZoom = camera.position.z;
 const centerQ = new Quaternion().copy(camera.quaternion);
 const centerEuler = new Euler(0.0, 0.0, 0.0);
 const centerZoom = cameraZoom;
-const leftQ = new Quaternion().setFromEuler(new Euler(0.0, 0.8, 0.0));
-const leftEuler = () => new Euler(0.0, 0.8, 0.0);
+const leftQ = () => new Quaternion().setFromEuler(leftEuler());
+const leftEuler = () => new Euler(0.0, Math.atan(window.innerWidth / window.innerHeight), 0.0);
 console.log(camera.aspect)
-const leftZoom = 600;
-console.log(leftEuler);
+const leftZoom = 800;
+console.log(leftEuler());
 
 // set a new target for the camera
 export function moveCamera(euler, zoom) {
@@ -80,7 +80,7 @@ export function moveCameraFromCenterToLeft() {
 export function moveCameraFromLeftToCenter() {
   // reset everything
   endQ = new Quaternion();
-  iniQ = new Quaternion().copy(leftQ);
+  iniQ = new Quaternion().copy(leftQ());
   curQ = new Quaternion();
   vec3 = new Vector3();
   tweenValue = 0;

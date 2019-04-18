@@ -23,19 +23,10 @@ import {
   Vector3,
   Vector2
 } from "three";
-import {
-  glowMaterial
-} from "~/scripts/space/globe/shaders";
-import {
-  camera
-} from "~/scripts/space/globe/camera";
-import {
-  TweenLite
-} from "gsap/TweenLite";
-import {
-  Sine,
-  Back
-} from "gsap";
+import { glowMaterial, particleMaterial } from "~/scripts/space/globe/shaders";
+import { camera } from "~/scripts/space/globe/camera";
+import { TweenLite } from "gsap/TweenLite";
+import { Sine, Back } from "gsap";
 
 let root;
 
@@ -64,6 +55,7 @@ export class SceneBuilder {
     this.scene.add(...this.lights);
 
     this.spotTexture = ImageUtils.loadTexture("/public/texture/mark.png");
+    this.starTexture = ImageUtils.loadTexture("/public/texture/spikey.png");
 
     this.sphere = new SphereGeometry(200, 75, 75);
     this.baseLayer = new Mesh(this.sphere, this.waterMaterial);
@@ -103,11 +95,10 @@ export class SceneBuilder {
       vertices.push(Math.random() * -500); // z
     }
     geometry.addAttribute("position", new Float32BufferAttribute(vertices, 3));
+    const starMaterial = particleMaterial(this.starTexture);
     var particles = new Points(
       geometry,
-      new PointsMaterial({
-        color: 0xffffff
-      })
+      starMaterial
     );
     this.scene.add(particles);
     this.scene.add(this.root);
@@ -118,9 +109,16 @@ export class SceneBuilder {
       map: this.spotTexture,
       color: 0xffffff
     });
-    const sprite = new Sprite(spriteMaterial);
-    sprite.scale.set(10, 10, 1.0);
-    sprite.material.color.setRGB(1.0, 0, 0.5);
+    const sphere = new SphereGeometry(3, 6, 6);
+    const material = new MeshPhongMaterial({
+      color: "#000000",
+      emissive: 0x0,
+      transparent: true,
+      shininess: 30,
+      fog: true
+    });
+    const sprite = new Mesh(sphere, material);
+    //sprite.material.color.setRGB(1.0, 0, 0.5);
     //sprite.material.blending = NormalBlending;
     sprite.position.copy(new Vector3(x, y, z));
     //sprite.center.copy(new Vector2(0.5, 0));
@@ -131,11 +129,13 @@ export class SceneBuilder {
 
   turnGlobe(x, y) {
     return new Promise(resolve => {
-      TweenLite.to({
+      TweenLite.to(
+        {
           turnY: this.root.rotation.y,
           turnX: this.root.rotation.x
         },
-        1.3, {
+        1.3,
+        {
           turnY: y,
           turnX: x,
           ease: Back.easeInOut,
