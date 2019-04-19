@@ -30,7 +30,7 @@ import { Sine, Back } from "gsap";
 
 let root;
 
-export class SceneBuilder {
+export class World {
   constructor(mapCanvas) {
     this.scene = new Scene();
     this.light = new HemisphereLight("#ffffff", "#666666", 1);
@@ -62,7 +62,6 @@ export class SceneBuilder {
     this.baseLayer.addEventListener("click", e => console.log("click", e));
     this.root = new Object3D();
     this.root.add(this.baseLayer);
-    root = this.root;
 
     this.mapTexture = new Texture(mapCanvas);
     this.mapTexture.needsUpdate = true;
@@ -100,8 +99,31 @@ export class SceneBuilder {
       geometry,
       starMaterial
     );
+    root = this.root;
     this.scene.add(particles);
     this.scene.add(this.root);
+  }
+
+  getOverlayMap() {
+    return this.overlayMap;
+  }
+
+  drawOverlay(map) {
+    if (this.overlayMap) {
+      this.overlay.material.map.needsUpdate = true;
+      return;
+    }
+    this.overlayMap = map;
+    const txt = new Texture(map);
+    txt.needsUpdate = true;
+    const material = new MeshPhongMaterial({map: txt, transparent: true});
+    if (!this.overlay) {
+      this.overlay = new Mesh(new SphereGeometry(201, 75, 75), material);
+      //this.overlay.rotation.y = Math.PI;
+      this.root.add(this.overlay);
+    } else {
+      this.overlay.material = material;
+    }
   }
 
   addPoint(x, y, z) {
@@ -109,7 +131,7 @@ export class SceneBuilder {
       map: this.spotTexture,
       color: 0xffffff
     });
-    const sphere = new SphereGeometry(3, 6, 6);
+    const sphere = new SphereGeometry(2, 6, 6);
     const material = new MeshPhongMaterial({
       color: "#000000",
       emissive: 0x0,
@@ -134,11 +156,11 @@ export class SceneBuilder {
           turnY: this.root.rotation.y,
           turnX: this.root.rotation.x
         },
-        1.3,
+        1,
         {
           turnY: y,
           turnX: x,
-          ease: Back.easeInOut,
+          ease: Sine.easeOut,
           onUpdate: this.onTurnUpdate,
           onComplete: resolve
         }

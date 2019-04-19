@@ -1,5 +1,5 @@
 import {
-  SceneBuilder,
+  World,
   camera,
   renderer,
   moveCamera,
@@ -7,8 +7,12 @@ import {
   moveCameraFromLeftToCenter
 } from '~/scripts/space/globe';
 import {
-  loadMapTexture
+  loadMap,
+  countryOverlay
 } from '~/scripts/space/map/map';
+import {
+  GeoDecoder
+} from '~/scripts/space/map/decoder';
 import {
   Euler
 } from 'three';
@@ -38,22 +42,32 @@ class Space {
     this.renderer = renderer;
     this.camera = camera;
     this.scaneBuilder = null;
-    this.mapCanvas = null;
+    this.worldTexture = null;
     this.tokio = [35.6890248, 139.7284301];
     this.isLeft = false;
     this.isRunning = false;
+    this.countries = null;
+    this.decoder = null;
   }
   run() {
     this.renderer.domElement.classList.add('canvas-3d');
     document.body.appendChild(this.renderer.domElement);
     this.watchResize();
-    loadMapTexture().then(mapCanvas => {
-      this.mapCanvas = mapCanvas;
-      this.build = new SceneBuilder(mapCanvas);
-      listenMouseEvents(this.camera, [this.build.baseLayer], 'click');
+    loadMap().then(data => {
+      const {worldTexture, countries} = data;
+      this.countries = countries;
+      this.worldTexture = worldTexture;
+      this.world = new World(worldTexture);
+      this.decoder = new GeoDecoder(countries.features);
+      listenMouseEvents(this.camera, [this.world.baseLayer], 'click');
       // debug clicks
-      this.build.baseLayer.addEventListener('click', e => {
-        let latlon = getEventCenter.call(this.build.baseLayer, e);
+      this.world.baseLayer.addEventListener('click', e => {
+        let latlon = getEventCenter.call(this.world.baseLayer, e);
+        const countryID = this.decoder.search(latlon[0], latlon[1]);
+        const country = this.decoder.find(countryID.code);
+        const overlay = countryOverlay(country, '#ffffff', this.world.getOverlayMap());
+        console.log('this.world.getOverlayMap()', this.world.getOverlayMap());
+        this.world.drawOverlay(overlay);
         this.turnGlobeToLatLon(latlon);
       });
       this.render();
@@ -66,19 +80,19 @@ class Space {
         x,
         y,
         z
-      } = convertToXYZ.call(this.build.baseLayer, latlon); //getPoint.call(this.build.baseLayer, e);
+      } = convertToXYZ.call(this.world.baseLayer, latlon); //getPoint.call(this.world.baseLayer, e);
       console.log(x,
         y,
         z);
-      let [latRads, lonRads] = getEventRotationFromLatLng.call(this.build.baseLayer, latlon[0], latlon[1]);
-      this.build.turnGlobe(latRads, -lonRads).then(() => {
+      let [latRads, lonRads] = getEventRotationFromLatLng.call(this.world.baseLayer, latlon[0], latlon[1]);
+      this.world.turnGlobe(latRads, -lonRads).then(() => {
         this.isRunning = false;
       });
-      this.build.addPoint(x, y, z);
+      this.world.addPoint(x, y, z);
     }
   }
   render() {
-    _render(this.renderer, this.build.scene, this.camera);
+    _render(this.renderer, this.world.scene, this.camera);
   }
   changeGlobeState() {
     if (!this.isRunning) {

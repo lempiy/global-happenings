@@ -1,5 +1,5 @@
 import {
-  SceneBuilder
+  World
 }
 from '~/scripts/space/globe/scene.js';
 import {
@@ -15,7 +15,7 @@ import {
 from '~/scripts/space/globe/renderer.js';
 
 export {
-  SceneBuilder,
+  World,
   camera,
   renderer,
   moveCamera,
