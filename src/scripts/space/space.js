@@ -9,10 +9,10 @@ import {
 import {
   loadMap,
   countryOverlay
-} from '~/scripts/space/map/map';
+} from '~/scripts/map/map';
 import {
   GeoDecoder
-} from '~/scripts/space/map/decoder';
+} from '~/scripts/map/decoder';
 import {
   Euler
 } from 'three';
@@ -49,29 +49,27 @@ class Space {
     this.countries = null;
     this.decoder = null;
   }
-  run() {
+  run(data) {
     this.renderer.domElement.classList.add('canvas-3d');
     document.body.appendChild(this.renderer.domElement);
     this.watchResize();
-    loadMap().then(data => {
-      const {worldTexture, countries} = data;
-      this.countries = countries;
-      this.worldTexture = worldTexture;
-      this.world = new World(worldTexture);
-      this.decoder = new GeoDecoder(countries.features);
-      listenMouseEvents(this.camera, [this.world.baseLayer], 'click');
-      // debug clicks
-      this.world.baseLayer.addEventListener('click', e => {
-        let latlon = getEventCenter.call(this.world.baseLayer, e);
-        const countryID = this.decoder.search(latlon[0], latlon[1]);
-        const country = this.decoder.find(countryID.code);
-        const overlay = countryOverlay(country, '#ffffff', this.world.getOverlayMap());
-        console.log('this.world.getOverlayMap()', this.world.getOverlayMap());
-        this.world.drawOverlay(overlay);
-        this.turnGlobeToLatLon(latlon);
-      });
-      this.render();
+    const {worldTexture, countries} = data;
+    this.countries = countries;
+    this.worldTexture = worldTexture;
+    this.world = new World(worldTexture);
+    this.decoder = new GeoDecoder(countries.features);
+    listenMouseEvents(this.camera, [this.world.baseLayer], 'click');
+    // debug clicks
+    this.world.baseLayer.addEventListener('click', e => {
+      let latlon = getEventCenter.call(this.world.baseLayer, e);
+      const countryID = this.decoder.search(latlon[0], latlon[1]);
+      const country = this.decoder.find(countryID.code);
+      const overlay = countryOverlay(country, '#ffffff', this.world.getOverlayMap());
+      console.log('this.world.getOverlayMap()', this.world.getOverlayMap());
+      this.world.drawOverlay(overlay);
+      this.turnGlobeToLatLon(latlon);
     });
+    this.render();
   }
   turnGlobeToLatLon(latlon) {
     if (!this.isRunning) {
