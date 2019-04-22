@@ -6,3 +6,23 @@ body {
   margin: 0;
   overflow: hidden;
 }
+
+.graticule {
+  fill: none;
+  stroke: #000;
+  stroke-opacity: .3;
+  stroke-width: .5px;
+}
+
+.graticule.outline {
+  stroke: #333;
+  stroke-opacity: 1;
+  stroke-width: 1.5px;
+}
+
+.place-online {
+  fill: red;
+  stroke: red;
+  stroke-opacity: 1;
+  stroke-width: 1.5px;
+}

@@ -4,12 +4,73 @@ import {
 import {
   geoEquirectangular,
   geoPath,
-  select
+  select,
+  geoEqualEarth,
+  geoGraticule,
 } from "d3";
+import {
+  feature as topojsonFeature
+} from 'topojson';
 
 const projection = geoEquirectangular()
   .translate([2048, 1024])
   .scale(650);
+
+const svgProjection = geoEqualEarth()
+  .translate([480, 250])
+  .scale(175);
+
+const london = [51.507351, -0.127758]
+function getLondon(topology) {
+  return topojsonFeature(topology, {
+    type: "Point",
+    coordinates: transformPoint(topology, london),
+  })
+}
+
+function transformPoint(topology, position) {
+  console.log(position, topology.transform.scale, topology.transform.translate);
+  position = position.slice();
+  position[0] = position[0] * topology.transform.scale[0] + topology.transform.translate[0],
+  position[1] = position[1] * topology.transform.scale[1] + topology.transform.translate[1]
+  console.log(position);
+  return position;
+};
+
+export function mapSvg(topology, geojson) {
+  const svg = select("body").append("svg")
+    .attr("width", "960px")
+    .attr("height", "500px");
+
+  const path = geoPath().projection(svgProjection);
+
+  const graticule = geoGraticule();
+  
+  svg.append("path")
+    .datum(graticule)
+    .attr("class", "graticule")
+    .attr("d", path);
+
+  svg.append("path")
+    .datum(graticule.outline)
+    .attr("class", "graticule outline")
+    .attr("d", path);
+
+  const london = getLondon(topology);
+  svg.append("path")
+    .datum(london)
+    .attr("d", path)
+    .attr("class", "place-online");
+    
+  svg.selectAll(".country")
+    .data(geojson.features)
+    .enter()
+    .insert("path", ".graticule")
+    .attr("class", "country")
+    .attr("d", path);
+  
+  return svg.node();
+}
 
 export function mapTexture(geojson, color, canvas) {
   canvas = canvas ? select(canvas) : select("body")
@@ -37,9 +98,6 @@ export function mapTexture(geojson, color, canvas) {
   }
 
   context.stroke();
-
-  // DEBUGGING - Really expensive, disable when done.
-  // console.log(canvas.node().toDataURL());
 
   canvas.remove();
 
