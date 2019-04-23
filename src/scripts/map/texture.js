@@ -20,27 +20,30 @@ const svgProjection = geoEqualEarth()
   .translate([480, 250])
   .scale(175);
 
-const london = [51.507351, -0.127758]
+const LONDON = [-0.127758, 51.507351]
 function getLondon(topology) {
+  const p = transformPoint(topology, LONDON);
+  console.log('p', p);
   return topojsonFeature(topology, {
     type: "Point",
-    coordinates: transformPoint(topology, london),
+    coordinates: p,
   })
 }
 
 function transformPoint(topology, position) {
-  console.log(position, topology.transform.scale, topology.transform.translate);
   position = position.slice();
-  position[0] = position[0] * topology.transform.scale[0] + topology.transform.translate[0],
-  position[1] = position[1] * topology.transform.scale[1] + topology.transform.translate[1]
-  console.log(position);
+  position[0] = (position[0] - topology.transform.translate[0])
+  /(topology.transform.scale[0]),
+  position[1] = (position[1] - topology.transform.translate[1])
+  /(topology.transform.scale[1]) 
   return position;
 };
 
 export function mapSvg(topology, geojson) {
   const svg = select("body").append("svg")
     .attr("width", "960px")
-    .attr("height", "500px");
+    .attr("height", "500px")
+    .attr("class", "world");
 
   const path = geoPath().projection(svgProjection);
 

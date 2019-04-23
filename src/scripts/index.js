@@ -7,10 +7,10 @@ import {
   loadMap
 } from '~/scripts/map/map';
 
-// document.body.addEventListener('contextmenu', (e) => {
-//   e.preventDefault();
-//   space.changeGlobeState();
-// });
+document.body.addEventListener('contextmenu', (e) => {
+  e.preventDefault();
+  space.changeGlobeState();
+});
 
 
 function run() {
