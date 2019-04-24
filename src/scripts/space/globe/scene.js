@@ -118,7 +118,7 @@ export class World {
     txt.needsUpdate = true;
     const material = new MeshPhongMaterial({map: txt, transparent: true});
     if (!this.overlay) {
-      this.overlay = new Mesh(new SphereGeometry(201, 75, 75), material);
+      this.overlay = new Mesh(new SphereGeometry(200, 75, 75), material);
       //this.overlay.rotation.y = Math.PI;
       this.root.add(this.overlay);
     } else {

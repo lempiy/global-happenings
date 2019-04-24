@@ -7,6 +7,8 @@ import {
   select,
   geoEqualEarth,
   geoGraticule,
+  scaleSqrt
+  
 } from "d3";
 import {
   feature as topojsonFeature
@@ -21,9 +23,8 @@ const svgProjection = geoEqualEarth()
   .scale(175);
 
 const LONDON = [-0.127758, 51.507351]
-function getLondon(topology) {
-  const p = transformPoint(topology, LONDON);
-  console.log('p', p);
+function mapPoint(topology, point) {
+  const p = transformPoint(topology, point);
   return topojsonFeature(topology, {
     type: "Point",
     coordinates: p,
@@ -40,7 +41,7 @@ function transformPoint(topology, position) {
 };
 
 export function mapSvg(topology, geojson) {
-  const svg = select("body").append("svg")
+  const svg = (select(".world").node() ? select(".world") : select("body").append("svg"))
     .attr("width", "960px")
     .attr("height", "500px")
     .attr("class", "world");
@@ -59,11 +60,11 @@ export function mapSvg(topology, geojson) {
     .attr("class", "graticule outline")
     .attr("d", path);
 
-  const london = getLondon(topology);
-  svg.append("path")
-    .datum(london)
-    .attr("d", path)
-    .attr("class", "place-online");
+  // const london = mapPoint(topology, LONDON);
+  // svg.append("path")
+  //   .datum(london)
+  //   .attr("d", path)
+  //   .attr("class", "place-online");
     
   svg.selectAll(".country")
     .data(geojson.features)
@@ -72,7 +73,27 @@ export function mapSvg(topology, geojson) {
     .attr("class", "country")
     .attr("d", path);
   
-  return svg.node();
+  return svg;
+}
+
+export function getRadius(n) {
+  return scaleSqrt().domain([0, 3000]).range([0, 15])(n)
+}
+
+export function applySvgStats(svg, topology, points) {
+  const path = geoPath().projection(svgProjection);
+  svg.selectAll(".stats").remove();
+  svg.append("g")
+      .attr("class", "stats")
+      .attr("fill", "brown")
+      .attr("fill-opacity", 0.5)
+      .attr("stroke", "#fff")
+      .attr("stroke-width", 0.5)
+    .selectAll("circle")
+      .data(points.map(p => mapPoint(topology, p)))
+      .join("circle")
+      .attr("transform", d => `translate(${path.centroid(d)})`)
+      .attr("r", d => getRadius(200));
 }
 
 export function mapTexture(geojson, color, canvas) {
