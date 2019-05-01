@@ -78,7 +78,7 @@ export class World {
 
     this.atmospheraMaterial = glowMaterial(0.7, 7.0, "#ff5607", camera);
     //this.atmospheraMaterial.opacity = 0.7;
-    this.atmosphera = new SphereGeometry(230, 75, 75);
+    this.atmosphera = new SphereGeometry(220, 75, 75);
     this.atmesh = new Mesh(this.atmosphera, this.atmospheraMaterial);
 
     this.mapLayer = new Mesh(this.sphere, this.mapMaterial);

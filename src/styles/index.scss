@@ -8,6 +8,7 @@ body {
 }
 
 .world {
+  will-change: transform;
   z-index: 2;
   position: absolute;
   top: 0;
