@@ -7,11 +7,29 @@ body {
   overflow: hidden;
 }
 
-.world {
-  will-change: transform;
+.widget {
   z-index: 2;
   position: absolute;
+  will-change: transform;
+}
+
+.widget-top-left {
   top: 0;
+  left: 0;
+}
+
+.widget-bottom-left {
+  bottom: 0;
+  left: 0;
+}
+
+.widget-top-right {
+  top: 0;
+  right: 0;
+}
+
+.widget-bottom-right {
+  bottom: 0;
   right: 0;
 }
 

@@ -96,11 +96,12 @@ class Space {
     if (!this.isRunning) {
       this.isRunning = true;
       const f = this.isLeft ? moveCameraFromLeftToCenter : moveCameraFromCenterToLeft;
-      f().then(() => {
+      return f().then(() => {
         this.isRunning = false;
         this.isLeft = !this.isLeft;
       });
     }
+    return Promise.resolve();
   }
   watchResize() {
     (function (camera, renderer) {

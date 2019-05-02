@@ -10,10 +10,7 @@ import {
   loadMap
 } from '~/scripts/map/map.js';
 
-document.body.addEventListener('contextmenu', (e) => {
-  e.preventDefault();
-  space.changeGlobeState();
-});
+
 
 
 function run() {
@@ -22,6 +19,12 @@ function run() {
     map.build();
     map.applySvgStats([[-0.127758, 51.507351], [-74.1140279, 40.6891766], [30.5238, 50.4547]]);
     space.run(data);
+    document.body.addEventListener('contextmenu', (e) => {
+      e.preventDefault();
+      space.changeGlobeState().then(() => {
+        map.isCollapsed() ? map.expand() : map.collapse();
+      });
+    });
   })
 }
 
