@@ -21,9 +21,8 @@ function run() {
     space.run(data);
     document.body.addEventListener('contextmenu', (e) => {
       e.preventDefault();
-      space.changeGlobeState().then(() => {
-        map.isCollapsed() ? map.expand() : map.collapse();
-      });
+      map.isCollapsed() ? map.expand() : map.collapse();
+      space.changeGlobeState();
     });
   })
 }

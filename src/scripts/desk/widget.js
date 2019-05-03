@@ -7,7 +7,7 @@ import {
 
 const WIDGET_SCREEN_FACTOR = 0.375;
 const WIDGET_HEIGHT_RATIO = 0.52;
-const EXPANDED_SCALE = 1.3;
+const EXPANDED_SCALE = 1.5;
 export const COLLAPSED_STATE = 'collapsed';
 const TRANSITION_STATE = 'transition';
 export const EXPANDED_STATE = 'expanded';
@@ -33,10 +33,10 @@ export class Widget {
         switch (this.position) {
             case POSITION_BOTTOM_LEFT:
             case POSITION_TOP_LEFT:
-                return this.state === COLLAPSED_STATE ? '0px' : `${window.innerWidth*0.5 - getWidgetWidth()*0.5}px`;
+                return this.state === COLLAPSED_STATE ? '0px' : `${window.innerWidth*0.83 - getWidgetWidth()*0.5}px`;
             case POSITION_BOTTOM_RIGHT:
             case POSITION_TOP_RIGHT:
-                return this.state === COLLAPSED_STATE ? '0px' : `-${window.innerWidth*0.5 - getWidgetWidth()*0.5}px`;
+                return this.state === COLLAPSED_STATE ? '0px' : `-${window.innerWidth*0.37 - getWidgetWidth()*0.5}px`;
         }
     }
 
@@ -69,14 +69,14 @@ export class Widget {
             this.state = state;
             switch (state) {
                 case EXPANDED_STATE:
-                    return TweenLite.to(this.node.node(), 1, 
+                    return TweenLite.to(this.node.node(), 1.3, 
                     {
                         transform: `translate(${this.getTranslateX()},${this.getTranslateY()}) scale(${EXPANDED_SCALE})`,
                         onComplete: resolve,
                         ease: Sine.easeOut,
                     });
                 case COLLAPSED_STATE:
-                    return TweenLite.to(this.node.node(), 1, {transform: `translate(0px,0px)`, onComplete: resolve, ease: Sine.easeOut});
+                    return TweenLite.to(this.node.node(), 1.3, {transform: `translate(0px,0px)`, onComplete: resolve, ease: Sine.easeOut});
             }
         })
     }
