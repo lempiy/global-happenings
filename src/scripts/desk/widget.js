@@ -5,7 +5,6 @@ import {
     Sine,
 } from 'gsap';
 
-const WIDGET_SCREEN_FACTOR = 0.375;
 const WIDGET_HEIGHT_RATIO = 0.52;
 const EXPANDED_SCALE = 1.5;
 export const COLLAPSED_STATE = 'collapsed';
@@ -18,13 +17,15 @@ export const POSITION_TOP_LEFT = 'top-left';
 export const POSITION_BOTTOM_RIGHT = 'bottom-right';
 export const POSITION_BOTTOM_LEFT = 'bottom-left';
 
-const getWidgetWidth = () => window.innerWidth * WIDGET_SCREEN_FACTOR;
-const getWidgetHeight = () => getWidgetWidth() * WIDGET_HEIGHT_RATIO;
+const getWidgetWidth = (widthFactor) => window.innerWidth * widthFactor;
+const getWidgetHeight = (widthFactor) => getWidgetWidth(widthFactor) * WIDGET_HEIGHT_RATIO;
 
 export class Widget {
-    constructor(node, position) {
+    constructor(node, config) {
+        const {position, widthFactor} = config;
         this.state = COLLAPSED_STATE;
         this.position = position;
+        this.widthFactor = widthFactor;
         this.node = node;
         this.node.attr('class', `widget widget-${position}`);
     }
@@ -33,10 +34,10 @@ export class Widget {
         switch (this.position) {
             case POSITION_BOTTOM_LEFT:
             case POSITION_TOP_LEFT:
-                return this.state === COLLAPSED_STATE ? '0px' : `${window.innerWidth*0.83 - getWidgetWidth()*0.5}px`;
+                return this.state === COLLAPSED_STATE ? '0px' : `${window.innerWidth*0.83 - getWidgetWidth(this.widthFactor)*0.5}px`;
             case POSITION_BOTTOM_RIGHT:
             case POSITION_TOP_RIGHT:
-                return this.state === COLLAPSED_STATE ? '0px' : `-${window.innerWidth*0.37 - getWidgetWidth()*0.5}px`;
+                return this.state === COLLAPSED_STATE ? '0px' : `-${window.innerWidth*0.37 - getWidgetWidth(this.widthFactor)*0.5}px`;
         }
     }
 
@@ -44,10 +45,10 @@ export class Widget {
         switch (this.position) {
             case POSITION_BOTTOM_LEFT:
             case POSITION_BOTTOM_RIGHT:
-                return this.state === COLLAPSED_STATE ? '0px' : `-${window.innerHeight*0.5 - getWidgetHeight()*0.5}px`;
+                return this.state === COLLAPSED_STATE ? '0px' : `-${window.innerHeight*0.5 - getWidgetHeight(this.widthFactor)*0.5}px`;
             case POSITION_TOP_LEFT:
             case POSITION_TOP_RIGHT:
-                return this.state === COLLAPSED_STATE ? '0px' : `${window.innerHeight*0.5 - getWidgetHeight()*0.5}px`;
+                return this.state === COLLAPSED_STATE ? '0px' : `${window.innerHeight*0.5 - getWidgetHeight(this.widthFactor)*0.5}px`;
         }
     }
 
@@ -82,10 +83,10 @@ export class Widget {
     }
 
     getWidgetWidth() {
-        return getWidgetWidth();
+        return getWidgetWidth(this.widthFactor);
     }
 
     getWidgetHeight() {
-        return getWidgetHeight();
+        return getWidgetHeight(this.widthFactor);
     }
 }

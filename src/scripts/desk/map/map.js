@@ -8,7 +8,9 @@ import {
   import {
     feature as topojsonFeature
   } from 'topojson';
-  import { Widget, POSITION_TOP_RIGHT, POSITION_BOTTOM_RIGHT } from '~/scripts/desk/widget.js';
+  import { Widget, POSITION_TOP_RIGHT } from '~/scripts/desk/widget.js';
+
+const WIDGET_SCREEN_FACTOR = 0.375;
 
 const getProjection = () => geoEqualEarth()
     .translate([480, 250])
@@ -37,7 +39,7 @@ function transformPoint(topology, position) {
 
 export class Map extends Widget {
     constructor(topology, geojson) {
-        super(select("body").append("svg"), POSITION_BOTTOM_RIGHT);
+        super(select("body").append("svg"), {position: POSITION_TOP_RIGHT, widthFactor: WIDGET_SCREEN_FACTOR});
         this.topology = topology;
         this.geojson = geojson;
         this.svg = this.node;

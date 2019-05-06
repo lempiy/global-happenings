@@ -7,6 +7,9 @@ import {
   Map
 } from '~/scripts/desk/map/map.js';
 import {
+  Table
+} from '~/scripts/desk/table/table.js';
+import {
   loadMap
 } from '~/scripts/map/map.js';
 
@@ -16,6 +19,8 @@ import {
 function run() {
   loadMap().then(data => {
     const map = new Map(data.topology, data.countries);
+    const table = new Table();
+    table.build();
     map.build();
     map.applySvgStats([[-0.127758, 51.507351], [-74.1140279, 40.6891766], [30.5238, 50.4547]]);
     space.run(data);
