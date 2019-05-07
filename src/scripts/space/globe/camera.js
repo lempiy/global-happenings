@@ -42,18 +42,16 @@ export function moveCamera(euler, zoom) {
   vec3 = new Vector3();
   tweenValue = 0;
   endQ.setFromEuler(euler);
-  return new Promise(resolve => {
-    TweenLite.to({
+  return [{
       value: 0,
       cameraZoom: cameraZoom,
     }, 1.3, {
       value: 1,
       ease: Sine.easeOut,
+
       cameraZoom: zoom,
-      onUpdate: onSlerpUpdate,
-      onComplete: resolve
-    });
-  });
+      onUpdate: onSlerpUpdate
+    }];
 }
 
 export function moveCameraFromCenterToLeft() {
@@ -64,18 +62,15 @@ export function moveCameraFromCenterToLeft() {
   vec3 = new Vector3();
   tweenValue = 0;
   endQ.setFromEuler(leftEuler());
-  return new Promise(resolve => {
-    TweenLite.to({
-      value: 0,
-      cameraZoom: centerZoom,
-    }, 1.3, {
-      value: 1,
-      ease: Sine.easeOut,
-      cameraZoom: leftZoom,
-      onUpdate: onSlerpUpdate,
-      onComplete: resolve
-    });
-  });
+  return [{
+    value: 0,
+    cameraZoom: centerZoom,
+  }, 1.3, {
+    value: 1,
+    ease: Sine.easeOut,
+    cameraZoom: leftZoom,
+    onUpdate: onSlerpUpdate
+  }];
 }
 
 export function moveCameraFromLeftToCenter() {
@@ -86,18 +81,15 @@ export function moveCameraFromLeftToCenter() {
   vec3 = new Vector3();
   tweenValue = 0;
   endQ.setFromEuler(centerEuler);
-  return new Promise(resolve => {
-    TweenLite.to({
-      value: 0,
-      cameraZoom: leftZoom,
-    }, 1.3, {
-      value: 1,
-      ease: Sine.easeOut,
-      cameraZoom: centerZoom,
-      onUpdate: onSlerpUpdate,
-      onComplete: resolve
-    });
-  });
+  return [{
+    value: 0,
+    cameraZoom: leftZoom,
+  }, 1.3, {
+    value: 1,
+    ease: Sine.easeOut,
+    cameraZoom: centerZoom,
+    onUpdate: onSlerpUpdate,
+  }];
 }
 
 // on every update of the tween

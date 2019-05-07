@@ -76,53 +76,35 @@ export class Widget {
         }
     }
 
-    isCollapsed() {
-        return this.state === COLLAPSED_STATE;
+    collapseTween() {
+        return this.getTween(COLLAPSED_STATE);
     }
 
-    collapse() {
-        this.changeState(COLLAPSED_STATE);
+    expandTween() {
+        return this.getTween(EXPANDED_STATE);
     }
 
-    expand() {
-        this.changeState(EXPANDED_STATE);
+    minimizeTween() {
+        return this.getTween(MINIMIZED_STATE);
     }
 
-    isCollapsed() {
-        return this.state === COLLAPSED_STATE;
-    }
-
-    isMinimized() {
-        return this.state === MINIMIZED_STATE;
-    }
-
-    minimize() {
-        this.changeState(MINIMIZED_STATE);
-    }
-
-    changeState(state) {
-        if (state === this.state) return Promise.resolve();
-        return new Promise((resolve, reject) => {
-            this.state = state;
-            switch (state) {
-                case EXPANDED_STATE:
-                    return TweenLite.to(this.node.node(), 1.3, 
-                    {
-                        transform: `translate(${this.getExpandedTranslateX()},${this.getExpandedTranslateY()}) scale(${EXPANDED_SCALE})`,
-                        onComplete: resolve,
-                        ease: Sine.easeOut,
-                    });
-                case MINIMIZED_STATE:
-                    return TweenLite.to(this.node.node(), 1.3, 
-                    {
-                        transform: `translate(${this.getMinimizedTranslateX()},${this.getMinimizedTranslateY()}) scale(${MINIMIZED_SCALE})`,
-                        onComplete: resolve,
-                        ease: Back.easeOut,
-                    });
-                case COLLAPSED_STATE:
-                    return TweenLite.to(this.node.node(), 1.3, {transform: `translate(0px,0px)`, onComplete: resolve, ease: Sine.easeOut});
-            }
-        })
+    getTween(state) {
+        switch (state) {
+            case EXPANDED_STATE:
+                return [this.node.node(), 1.3, 
+                {
+                    transform: `translate(${this.getExpandedTranslateX()},${this.getExpandedTranslateY()}) scale(${EXPANDED_SCALE})`,
+                    ease: Sine.easeOut,
+                }];
+            case MINIMIZED_STATE:
+                return [this.node.node(), 1.3, 
+                {
+                    transform: `translate(${this.getMinimizedTranslateX()},${this.getMinimizedTranslateY()}) scale(${MINIMIZED_SCALE})`,
+                    ease: Back.easeOut,
+                }];
+            case COLLAPSED_STATE:
+                return [this.node.node(), 1.3, {transform: `translate(0px,0px)`, ease: Sine.easeOut}];
+        }
     }
 
     getWidgetWidth() {

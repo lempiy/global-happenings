@@ -29,6 +29,10 @@ import {
 }
 from '~/scripts/space/utils/events.js';
 
+export const GLOBE_STATE_LEFT = 'LEFT';
+export const CLOBE_STATE_CENTER = 'CENTER';
+export const CLOBE_STATE_RIGHT = 'RIGHT';
+
 const _render = (renderer, scene, camera) => {
   const _loop = () => {
     requestAnimationFrame(_loop);
@@ -92,16 +96,9 @@ class Space {
   render() {
     _render(this.renderer, this.world.scene, this.camera);
   }
-  changeGlobeState() {
-    if (!this.isRunning) {
-      this.isRunning = true;
-      const f = this.isLeft ? moveCameraFromLeftToCenter : moveCameraFromCenterToLeft;
-      return f().then(() => {
-        this.isRunning = false;
-        this.isLeft = !this.isLeft;
-      });
-    }
-    return Promise.resolve();
+  getGlobeTween(state) {
+    const f = state === GLOBE_STATE_LEFT ? moveCameraFromCenterToLeft : moveCameraFromLeftToCenter;
+    return f();
   }
   watchResize() {
     (function (camera, renderer) {
