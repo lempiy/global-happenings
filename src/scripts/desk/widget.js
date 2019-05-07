@@ -3,6 +3,7 @@ import {
 } from 'gsap/TweenLite';
 import {
     Sine,
+    Back
 } from 'gsap';
 
 const WIDGET_HEIGHT_RATIO = 0.52;
@@ -116,7 +117,7 @@ export class Widget {
                     {
                         transform: `translate(${this.getMinimizedTranslateX()},${this.getMinimizedTranslateY()}) scale(${MINIMIZED_SCALE})`,
                         onComplete: resolve,
-                        ease: Sine.easeOut,
+                        ease: Back.easeOut,
                     });
                 case COLLAPSED_STATE:
                     return TweenLite.to(this.node.node(), 1.3, {transform: `translate(0px,0px)`, onComplete: resolve, ease: Sine.easeOut});
