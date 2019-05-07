@@ -37,4 +37,11 @@ export class Table extends Widget {
             });
         }
     }
+    addRow(data) {
+        this.body.select('tr:last-of-type').remove();
+        const row = this.body.insert('tr', ':first-child').attr('height', this.getRowHeight()+'px');
+        this.columns.forEach(c => {
+            row.append('td')
+        });
+    }
 }

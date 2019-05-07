@@ -27,7 +27,7 @@ const centerQ = new Quaternion().copy(camera.quaternion);
 const centerEuler = new Euler(0.0, 0.0, 0.0);
 const centerZoom = cameraZoom;
 const leftQ = () => new Quaternion().setFromEuler(leftEuler());
-const cameraYRotationNoRatioConstant = 0.5
+const cameraYRotationNoRatioConstant = 0.45
 const leftEuler = () => new Euler(0.0, Math.atan(cameraYRotationNoRatioConstant*(window.innerWidth / window.innerHeight)), 0.0);
 console.log(camera.aspect)
 const leftZoom = 1200;

@@ -6,9 +6,10 @@ import {
 } from 'gsap';
 
 const WIDGET_HEIGHT_RATIO = 0.52;
-const EXPANDED_SCALE = 1.5;
+const EXPANDED_SCALE = 1.4;
+const MINIMIZED_SCALE = 0.8;
 export const COLLAPSED_STATE = 'collapsed';
-const TRANSITION_STATE = 'transition';
+export const MINIMIZED_STATE = 'minimized';
 export const EXPANDED_STATE = 'expanded';
 
 
@@ -30,25 +31,47 @@ export class Widget {
         this.node.attr('class', `widget widget-${position}`);
     }
 
-    getTranslateX() {
+    getExpandedTranslateX() {
         switch (this.position) {
             case POSITION_BOTTOM_LEFT:
             case POSITION_TOP_LEFT:
-                return this.state === COLLAPSED_STATE ? '0px' : `${window.innerWidth*0.83 - getWidgetWidth(this.widthFactor)*0.5}px`;
+                return `${window.innerWidth*0.66 - getWidgetWidth(this.widthFactor)*0.5}px`;
             case POSITION_BOTTOM_RIGHT:
             case POSITION_TOP_RIGHT:
-                return this.state === COLLAPSED_STATE ? '0px' : `-${window.innerWidth*0.37 - getWidgetWidth(this.widthFactor)*0.5}px`;
+                return `-${window.innerWidth*0.33 - getWidgetWidth(this.widthFactor)*0.5}px`;
         }
     }
 
-    getTranslateY() {
+    getExpandedTranslateY() {
         switch (this.position) {
             case POSITION_BOTTOM_LEFT:
             case POSITION_BOTTOM_RIGHT:
-                return this.state === COLLAPSED_STATE ? '0px' : `-${window.innerHeight*0.5 - getWidgetHeight(this.widthFactor)*0.5}px`;
+                return `-${window.innerHeight*0.7 - getWidgetHeight(this.widthFactor)*0.5}px`;
             case POSITION_TOP_LEFT:
             case POSITION_TOP_RIGHT:
-                return this.state === COLLAPSED_STATE ? '0px' : `${window.innerHeight*0.5 - getWidgetHeight(this.widthFactor)*0.5}px`;
+                return `${window.innerHeight*0.3 - getWidgetHeight(this.widthFactor)*0.5}px`;
+        }
+    }
+
+    getMinimizedTranslateX() {
+        switch (this.position) {
+            case POSITION_BOTTOM_LEFT:
+            case POSITION_TOP_LEFT:
+                return `${window.innerWidth*0.66 - getWidgetWidth(this.widthFactor)*0.5}px`;
+            case POSITION_BOTTOM_RIGHT:
+            case POSITION_TOP_RIGHT:
+                return `-${window.innerWidth*0.33 - getWidgetWidth(this.widthFactor)*0.5}px`;
+        }
+    }
+
+    getMinimizedTranslateY() {
+        switch (this.position) {
+            case POSITION_BOTTOM_LEFT:
+            case POSITION_BOTTOM_RIGHT:
+                return `0px`; // `${window.innerHeight*0.7 - getWidgetHeight(this.widthFactor)*0.5}px`;
+            case POSITION_TOP_LEFT:
+            case POSITION_TOP_RIGHT:
+                return `0px`; // `${window.innerHeight*0.3 - getWidgetHeight(this.widthFactor)*0.5}px`;
         }
     }
 
@@ -64,6 +87,18 @@ export class Widget {
         this.changeState(EXPANDED_STATE);
     }
 
+    isCollapsed() {
+        return this.state === COLLAPSED_STATE;
+    }
+
+    isMinimized() {
+        return this.state === MINIMIZED_STATE;
+    }
+
+    minimize() {
+        this.changeState(MINIMIZED_STATE);
+    }
+
     changeState(state) {
         if (state === this.state) return Promise.resolve();
         return new Promise((resolve, reject) => {
@@ -72,7 +107,14 @@ export class Widget {
                 case EXPANDED_STATE:
                     return TweenLite.to(this.node.node(), 1.3, 
                     {
-                        transform: `translate(${this.getTranslateX()},${this.getTranslateY()}) scale(${EXPANDED_SCALE})`,
+                        transform: `translate(${this.getExpandedTranslateX()},${this.getExpandedTranslateY()}) scale(${EXPANDED_SCALE})`,
+                        onComplete: resolve,
+                        ease: Sine.easeOut,
+                    });
+                case MINIMIZED_STATE:
+                    return TweenLite.to(this.node.node(), 1.3, 
+                    {
+                        transform: `translate(${this.getMinimizedTranslateX()},${this.getMinimizedTranslateY()}) scale(${MINIMIZED_SCALE})`,
                         onComplete: resolve,
                         ease: Sine.easeOut,
                     });
