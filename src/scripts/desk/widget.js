@@ -94,16 +94,16 @@ export class Widget {
                 return [this.node.node(), 1.3, 
                 {
                     transform: `translate(${this.getExpandedTranslateX()},${this.getExpandedTranslateY()}) scale(${EXPANDED_SCALE})`,
-                    ease: Sine.easeOut,
+                    ease: Sine.easeInOut,
                 }];
             case MINIMIZED_STATE:
                 return [this.node.node(), 1.3, 
                 {
                     transform: `translate(${this.getMinimizedTranslateX()},${this.getMinimizedTranslateY()}) scale(${MINIMIZED_SCALE})`,
-                    ease: Back.easeOut,
+                    ease: Back.easeInOut,
                 }];
             case COLLAPSED_STATE:
-                return [this.node.node(), 1.3, {transform: `translate(0px,0px)`, ease: Sine.easeOut}];
+                return [this.node.node(), 1.3, {transform: `translate(0px,0px)`, ease: Sine.easeInOut}];
         }
     }
 

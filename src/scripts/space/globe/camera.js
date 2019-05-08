@@ -47,8 +47,7 @@ export function moveCamera(euler, zoom) {
       cameraZoom: cameraZoom,
     }, 1.3, {
       value: 1,
-      ease: Sine.easeOut,
-
+      ease: Sine.easeInOut,
       cameraZoom: zoom,
       onUpdate: onSlerpUpdate
     }];
@@ -67,7 +66,7 @@ export function moveCameraFromCenterToLeft() {
     cameraZoom: centerZoom,
   }, 1.3, {
     value: 1,
-    ease: Sine.easeOut,
+    ease: Sine.easeInOut,
     cameraZoom: leftZoom,
     onUpdate: onSlerpUpdate
   }];
@@ -86,7 +85,7 @@ export function moveCameraFromLeftToCenter() {
     cameraZoom: leftZoom,
   }, 1.3, {
     value: 1,
-    ease: Sine.easeOut,
+    ease: Sine.easeInOut,
     cameraZoom: centerZoom,
     onUpdate: onSlerpUpdate,
   }];

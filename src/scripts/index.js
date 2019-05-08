@@ -37,7 +37,8 @@ function run() {
     let timelineTable = new TimelineLite({ paused: true });
     let timelineMap = new TimelineLite({ paused: true });
     timelineMap.to(...space.getGlobeTween(GLOBE_STATE_LEFT));
-    timelineMap.to(...map.expandTween());
+    timelineMap.to(...map.expandTween(), '-=1.3');
+    timelineMap.to(...table.minimizeTween(), '-=1.3');
     
     let currentTimeline = null;
     let isMoved = false;

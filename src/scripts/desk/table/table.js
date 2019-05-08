@@ -38,10 +38,19 @@ export class Table extends Widget {
         }
     }
     addRow(data) {
-        this.body.select('tr:last-of-type').remove();
-        const row = this.body.insert('tr', ':first-child').attr('height', this.getRowHeight()+'px');
-        this.columns.forEach(c => {
-            row.append('td')
-        });
+        const {body, columns} = this;
+        const rowHeight = this.getRowHeight();
+        body.select('tr:last-of-type')
+            .transition()
+            .style('transform', `translateY(${rowHeight}px)`)
+            .duration(1000)
+            .on('end', function() {
+                this.remove();
+                const row = body.insert('tr', ':first-child').attr('height', rowHeight+'px').style('transform', 'translate(50%)');
+                columns.forEach(c => {
+                    row.append('td')
+                });
+                row.transition().duration(1000).style('transform', 'translate(0)');
+            });
     }
 }
