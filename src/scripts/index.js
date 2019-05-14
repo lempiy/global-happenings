@@ -6,14 +6,14 @@ import {
 }
 from '~/scripts/space/space.js';
 import {
-  Map
-} from '~/scripts/desk/map/map.js';
-import {
-  Table
-} from '~/scripts/desk/table/table.js';
+  Desk
+} from '~/scripts/desk/desk.js';
 import {
   loadMap
 } from '~/scripts/map/map.js';
+import {
+  dataService
+} from '~/scripts/service/data.js';
 import {
   TimelineLite
 } from 'gsap';
@@ -22,47 +22,67 @@ const STATE_FOCUS_ON_MAP = 'MAP';
 const STATE_FOCUS_ON_GLOBE = 'GLOBE';
 const STATE_FOCUS_ON_TABLE = 'TABLE';
 
+class App {
+  constructor(space) {
+    this.currentTimeline = null;
+    this.space = space;
+    this.dataService = dataService;
+  }
 
-function run() {
-  loadMap().then(data => {
-    let state = STATE_FOCUS_ON_GLOBE;
-    const map = new Map(data.topology, data.countries);
-    const table = new Table();
-    table.build();
-    table.addRow();
-    map.build();
-    map.applySvgStats([[-0.127758, 51.507351], [-74.1140279, 40.6891766], [30.5238, 50.4547]]);
-    space.run(data);
+  run() {
+    dataService.emulate();
+    loadMap().then(data => {
+      this.desk = new Desk(data.topology, data.countries);
+      this.desk.build();
+      this.space.run(data);
 
-    let timelineTable = new TimelineLite({ paused: true });
-    let timelineMap = new TimelineLite({ paused: true });
-    timelineMap.to(...space.getGlobeTween(GLOBE_STATE_LEFT));
-    timelineMap.to(...map.expandTween(), '-=1.3');
-    timelineMap.to(...table.minimizeTween(), '-=1.3');
-    
-    let currentTimeline = null;
-    let isMoved = false;
-    function moveToMap() {
-      if (currentTimeline && currentTimeline.isActive()) {
-        currentTimeline.pause();
-      };
-      currentTimeline = timelineMap;
-      currentTimeline.restart();
-      isMoved = true;
-    }
-    function moveFromMap() {
-      if (currentTimeline && currentTimeline.isActive()) {
-        currentTimeline.pause();
-      };
-      currentTimeline = timelineMap;
-      currentTimeline.reverse();
-      isMoved = false;
-    }
-    document.body.addEventListener('contextmenu', (e) => {
-      e.preventDefault();
-      isMoved ? moveFromMap() : moveToMap();
-    });
-  })
-}
+      this.dataService.onDailyChange(value => {
+        space.watchPoint([Number(value.data.lat), Number(value.data.lng)]);
+        console.log(value.data.name, value.data.country);
+      });
 
-run();
+      this.timelineTable = new TimelineLite({ paused: true });
+      this.setupDescriptionAnimation();
+
+      let isMoved = false;
+      document.body.addEventListener('contextmenu', (e) => {
+        e.preventDefault();
+        if (isMoved) {
+          this.animateFromDescription();
+          isMoved = false;
+        } else {
+          this.animateToDescription();
+          isMoved = true;
+        }
+      });
+    })
+  }
+
+  setupDescriptionAnimation() {
+    this.timelineDescription = new TimelineLite({ paused: true });
+    this.timelineDescription.to(...this.space.getGlobeTween(GLOBE_STATE_LEFT));
+    const {mapExpand, tableMinimize} = this.desk.getTweens();
+    this.timelineDescription.to(...mapExpand, '-=1.3');
+    this.timelineDescription.to(...tableMinimize, '-=1.3');
+  }
+
+  animateToDescription() {
+    if (this.currentTimeline && this.currentTimeline.isActive()) {
+        this.currentTimeline.pause();
+    };
+    this.currentTimeline = this.timelineDescription;
+    this.currentTimeline.restart();
+  }
+
+  animateFromDescription() {
+    if (this.currentTimeline && this.currentTimeline.isActive()) {
+        this.currentTimeline.pause();
+    };
+    this.currentTimeline = this.timelineDescription;
+    this.currentTimeline.reverse();
+  }
+} 
+
+const app = new App(space);
+
+app.run();

@@ -75,6 +75,15 @@ class Space {
     });
     this.render();
   }
+
+  watchPoint(latlon) {
+    const countryID = this.decoder.search(latlon[0], latlon[1]);
+    const country = this.decoder.find(countryID.code);
+    const overlay = countryOverlay(country, '#ffffff', this.world.getOverlayMap());
+    this.world.drawOverlay(overlay);
+    this.turnGlobeToLatLon(latlon);
+  }
+
   turnGlobeToLatLon(latlon) {
     if (!this.isRunning) {
       this.isRunning = true;

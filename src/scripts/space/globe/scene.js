@@ -127,10 +127,7 @@ export class World {
   }
 
   addPoint(x, y, z) {
-    const spriteMaterial = new SpriteMaterial({
-      map: this.spotTexture,
-      color: 0xffffff
-    });
+    this.sprite && this.root.remove(this.sprite);
     const sphere = new SphereGeometry(2, 6, 6);
     const material = new MeshPhongMaterial({
       color: "#000000",
@@ -139,14 +136,14 @@ export class World {
       shininess: 30,
       fog: true
     });
-    const sprite = new Mesh(sphere, material);
+    this.sprite = new Mesh(sphere, material);
     //sprite.material.color.setRGB(1.0, 0, 0.5);
     //sprite.material.blending = NormalBlending;
-    sprite.position.copy(new Vector3(x, y, z));
+    this.sprite.position.copy(new Vector3(x, y, z));
     //sprite.center.copy(new Vector2(0.5, 0));
 
-    this.root.add(sprite);
-    console.log("added", sprite, this.root);
+    this.root.add(this.sprite);
+    console.log("added", this.sprite, this.root);
   }
 
   turnGlobe(x, y) {
