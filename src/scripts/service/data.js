@@ -29,7 +29,7 @@ class DataService {
                 setInterval(() => {
                     const city = cities[getRandomInt(0, TOTAL)];
                     const country = countries[city.country];
-                    this.addItem({...city, country});
+                    this.addItem({...city, country_props: country});
                 }, 3000)
             })
     }

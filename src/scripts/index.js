@@ -32,13 +32,15 @@ class App {
   run() {
     dataService.emulate();
     loadMap().then(data => {
+      const columns = [{"key": "flag", "title": ""}, {"key": "country", "title": "Country"}, {"key": "city", "title": "City"}, , {"key": "datetime", "title": "Datetime"}];
       this.desk = new Desk(data.topology, data.countries);
-      this.desk.build();
+      this.desk.build(columns);
       this.space.run(data);
-
+      
       this.dataService.onDailyChange(value => {
         space.watchPoint([Number(value.data.lat), Number(value.data.lng)]);
-        console.log(value.data.name, value.data.country);
+        console.log(data);
+        this.desk.addToTable({"flag": `<img src='https://www.countryflags.io/${value.data.country.toLowerCase()}/flat/32.png'/ alt='${value.data.country}-flag'>`, "country": value.data.country_props.name, "city": value.data.name, "datetime": (new Date).toISOString()})
       });
 
       this.timelineTable = new TimelineLite({ paused: true });
