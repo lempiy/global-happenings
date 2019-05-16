@@ -27,6 +27,11 @@ export class Desk {
         this.table.addRow(item);
     }
 
+    addToMap(item) {
+        console.log('addToMap', item);
+        this.map.applySvgStats([[Number(item.lng), Number(item.lat)]]);
+    }
+
     getTweens() {
         return {
             mapExpand: this.map.expandTween(),

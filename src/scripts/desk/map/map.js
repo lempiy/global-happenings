@@ -44,6 +44,7 @@ export class Map extends Widget {
         this.geojson = geojson;
         this.svg = this.node;
         this.svg.attr('viewBox', '0 0 960 500');
+        this.points = [];
     }
 
     clear() {
@@ -81,18 +82,26 @@ export class Map extends Widget {
     applySvgStats(points) {
         const path = geoPath().projection(getProjection(this.getWidgetWidth(), this.getWidgetHeight()));;
         const svg = this.svg;
-        svg.selectAll(".stats").remove();
-        svg.append("g")
+        const g = svg.select("g");
+        console.log('this.points', this.points);
+        this.points = this.points.concat(points.map(p => mapPoint(this.topology, p)))
+        console.log(this.points);
+        (g.node() ? g : svg.append("g"))
             .attr("class", "stats")
             .attr("fill", "green")
-            .attr("fill-opacity", 0.5)
+            .attr("fill-opacity", 1)
             .attr("stroke", "#fff")
-            .attr("stroke-width", 0.5)
+            .attr("stroke-width", 0)
         .selectAll("circle")
-            .data(points.map(p => mapPoint(this.topology, p)))
+            .data(this.points)
             .join("circle")
-            .attr("transform", d => `translate(${path.centroid(d)})`)
-            .attr("r", d => getRadius(2000));
+            .attr("cx", function (d) { return path.centroid(d)[0]; })
+            .attr("cy", function (d) { return path.centroid(d)[1]; })
+            // .attr("transform", d => {
+            //     console.log(path.centroid(d));
+            //     return `translate(${path.centroid(d)})`
+            // })
+            .attr("r", d => getRadius(200));
     }
 };
   
