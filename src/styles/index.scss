@@ -45,9 +45,22 @@ tbody tr {
   background-color: rgba($color: #ff5607, $alpha: 0.4);
 }
 
+tbody td {
+  color: #fff;
+  padding: 0 5px;
+}
+
 tbody tr:nth-child(even) {
   background-color: rgba($color: #333, $alpha: 0.6);
 }
+
+tbody tr.with-data:nth-child(1) {
+  background-color: rgba($color: #fff, $alpha: 0.8);
+  & td {
+    color: #000000;
+  }
+}
+
 
 .widget-top-left {
   top: 0;

@@ -82,16 +82,16 @@ export class World {
     this.atmesh = new Mesh(this.atmosphera, this.atmospheraMaterial);
 
     this.mapLayer = new Mesh(this.sphere, this.mapMaterial);
-    console.log(this.mapLayer);
+
     this.root.add(this.mapLayer);
     this.scene.add(this.atmesh);
 
     var geometry = new BufferGeometry();
     var vertices = [];
     for (var i = 0; i < 10000; i++) {
-      vertices.push(ThreeMath.randFloatSpread(8000)); // x
-      vertices.push(ThreeMath.randFloatSpread(5000)); // y
-      vertices.push(Math.random() * -500); // z
+      vertices.push(ThreeMath.randFloatSpread(4000)); // x
+      vertices.push(ThreeMath.randFloatSpread(2000)); // y
+      vertices.push(Math.random() * -10); // z
     }
     geometry.addAttribute("position", new Float32BufferAttribute(vertices, 3));
     const starMaterial = particleMaterial(this.starTexture);
@@ -144,6 +144,17 @@ export class World {
 
     this.root.add(this.sprite);
     console.log("added", this.sprite, this.root);
+  }
+
+  removePoints() {
+    this.sprite && this.root.remove(this.sprite);
+    this.sprite = null;
+  }
+
+  cleanOverlay() {
+    if (this.overlayMap) {
+      this.overlay.material.map.needsUpdate = true;
+    }
   }
 
   turnGlobe(x, y) {

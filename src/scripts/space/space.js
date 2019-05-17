@@ -8,7 +8,8 @@ import {
 } from '~/scripts/space/globe';
 import {
   loadMap,
-  countryOverlay
+  countryOverlay,
+  emptyOverlay
 } from '~/scripts/map/map';
 import {
   GeoDecoder
@@ -66,25 +67,26 @@ class Space {
     // debug clicks
     this.world.baseLayer.addEventListener('click', e => {
       let latlon = getEventCenter.call(this.world.baseLayer, e);
-      const countryID = this.decoder.search(latlon[0], latlon[1]);
-      const country = this.decoder.find(countryID.code);
-      const overlay = countryOverlay(country, '#ffffff', this.world.getOverlayMap());
-      console.log('this.world.getOverlayMap()', this.world.getOverlayMap());
-      this.world.drawOverlay(overlay);
-      this.turnGlobeToLatLon(latlon);
     });
     this.render();
   }
 
   watchPoint(latlon) {
     const countryID = this.decoder.search(latlon[0], latlon[1]);
+    if (!countryID) return;
     const country = this.decoder.find(countryID.code);
     const overlay = countryOverlay(country, '#ffffff', this.world.getOverlayMap());
     this.world.drawOverlay(overlay);
-    this.turnGlobeToLatLon(latlon);
+    this.focusGlobeOnLatLon(latlon);
   }
 
-  turnGlobeToLatLon(latlon) {
+  normalizeGlobe() {
+    const overlay = emptyOverlay(this.world.getOverlayMap());
+    this.world.cleanOverlay(overlay);
+    this.unfocusGlobe();
+  }
+
+  focusGlobeOnLatLon(latlon) {
     if (!this.isRunning) {
       this.isRunning = true;
       var {
@@ -102,6 +104,17 @@ class Space {
       this.world.addPoint(x, y, z);
     }
   }
+
+  unfocusGlobe() {
+    if (!this.isRunning) {
+      this.isRunning = true;
+      this.world.turnGlobe(0, 0).then(() => {
+        this.isRunning = false;
+      });
+      this.world.removePoints();
+    }
+  }
+
   render() {
     _render(this.renderer, this.world.scene, this.camera);
   }

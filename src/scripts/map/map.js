@@ -6,6 +6,7 @@ import {
 } from 'topojson';
 import {
   mapTexture,
+  emptyTexture
 } from '~/scripts/map/texture';
 export const loadMap = () => json('public/data/world.json').then(data => {
   const countries = topojsonFeature(data, data.objects.countries);
@@ -15,4 +16,10 @@ export const loadMap = () => json('public/data/world.json').then(data => {
 
 export const countryOverlay = (country, color, canvas) => {
   return mapTexture(country.geometry, color, canvas);
-}
+};
+
+export const heatmapOverlay = (data, canvas) => {
+  
+};
+
+export const emptyOverlay = (canvas) => emptyTexture(canvas);

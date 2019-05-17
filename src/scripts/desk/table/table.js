@@ -4,15 +4,15 @@ import { select } from 'd3';
 const WIDGET_SCREEN_FACTOR = 0.34;
 
 export class Table extends Widget {
-    constructor(max_items = 6) {
+    constructor(max_items = 5) {
         super(select("body").append("table"), {position: POSITION_BOTTOM_LEFT, widthFactor: WIDGET_SCREEN_FACTOR});
-        this.rowHeight = 100 / (max_items + 1)
+        this.rowHeight = 100 / (max_items + 2)
         this.maxItems = max_items;
         this.body = null;
     }
 
     getRowHeight() {
-        return this.getWidgetHeight() / (this.maxItems + 1)
+        return this.getWidgetHeight() / (this.maxItems + 2)
     }
     
     build(columns) {
@@ -47,7 +47,7 @@ export class Table extends Widget {
             .duration(500)
             .on('end', function() {
                 this.remove();
-                const row = body.insert('tr', ':first-child').attr('height', rowHeight+'px').style('transform', 'translate(50%)');
+                const row = body.insert('tr', ':first-child').attr('class', 'with-data').attr('height', rowHeight+'px').style('transform', 'translate(50%)');
                 columns.forEach(c => {
                     row.append('td').html(data[c.key]);
                 });

@@ -10,7 +10,7 @@ import {
 import {
   Sine,
 } from 'gsap';
-export const camera = new PerspectiveCamera(75, window.innerWidth / window.innerHeight, 30, 3000);
+export const camera = new PerspectiveCamera(30, window.innerWidth / window.innerHeight, 1, 6000);
 let cameraPos0; // initial camera position
 let cameraUp0; // initial camera up
 let cameraZoom; // camera zoom
@@ -19,7 +19,7 @@ let endQ; // target quaternion
 let curQ; // temp quaternion during slerp
 let vec3; // generic vector object
 let tweenValue; // tweenable value 
-camera.position.copy(new Vector3(0, 0, 700));
+camera.position.copy(new Vector3(0, 0, 1600));
 cameraPos0 = camera.position.clone();
 cameraUp0 = camera.up.clone();
 cameraZoom = camera.position.z;
@@ -27,10 +27,10 @@ const centerQ = new Quaternion().copy(camera.quaternion);
 const centerEuler = new Euler(0.0, 0.0, 0.0);
 const centerZoom = cameraZoom;
 const leftQ = () => new Quaternion().setFromEuler(leftEuler());
-const cameraYRotationNoRatioConstant = 0.45
+const cameraYRotationNoRatioConstant = 0.16
 const leftEuler = () => new Euler(0.0, Math.atan(cameraYRotationNoRatioConstant*(window.innerWidth / window.innerHeight)), 0.0);
 console.log(camera.aspect)
-const leftZoom = 1200;
+const leftZoom = 2300;
 console.log(leftEuler());
 
 // set a new target for the camera

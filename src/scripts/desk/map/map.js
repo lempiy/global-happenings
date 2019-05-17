@@ -89,19 +89,23 @@ export class Map extends Widget {
         (g.node() ? g : svg.append("g"))
             .attr("class", "stats")
             .attr("fill", "green")
-            .attr("fill-opacity", 1)
+            .attr("fill-opacity", 0.5)
             .attr("stroke", "#fff")
-            .attr("stroke-width", 0)
+            .attr("stroke-width", 0.5)
         .selectAll("circle")
             .data(this.points)
-            .join("circle")
+            .enter()
+            .append("circle")
             .attr("cx", function (d) { return path.centroid(d)[0]; })
             .attr("cy", function (d) { return path.centroid(d)[1]; })
-            // .attr("transform", d => {
-            //     console.log(path.centroid(d));
-            //     return `translate(${path.centroid(d)})`
-            // })
-            .attr("r", d => getRadius(200));
+            .attr("r", d => 50)
+            .filter(d => {
+                console.log('datum', d);
+                return true
+            })
+            .transition()
+            .duration(500)
+            .attr("r", 2.5)
     }
 };
   

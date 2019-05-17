@@ -32,13 +32,16 @@ class App {
   run() {
     dataService.emulate();
     loadMap().then(data => {
+      let isMoved = false;
       const columns = [{"key": "flag", "title": ""}, {"key": "country", "title": "Country"}, {"key": "city", "title": "City"}, , {"key": "datetime", "title": "Datetime"}];
       this.desk = new Desk(data.topology, data.countries);
       this.desk.build(columns);
       this.space.run(data);
       
       this.dataService.onDailyChange(value => {
-        space.watchPoint([Number(value.data.lat), Number(value.data.lng)]);
+        if (!isMoved) {
+          space.watchPoint([Number(value.data.lat), Number(value.data.lng)]);
+        }
         this.desk.addToTable({"flag": `<img src='https://www.countryflags.io/${value.data.country.toLowerCase()}/flat/32.png'/ alt='${value.data.country}-flag'>`, "country": value.data.country_props.name, "city": value.data.name, "datetime": (new Date).toISOString()})
         this.desk.addToMap(value.data);
       });
@@ -46,7 +49,6 @@ class App {
       this.timelineTable = new TimelineLite({ paused: true });
       this.setupDescriptionAnimation();
 
-      let isMoved = false;
       document.body.addEventListener('contextmenu', (e) => {
         e.preventDefault();
         if (isMoved) {
@@ -55,6 +57,7 @@ class App {
         } else {
           this.animateToDescription();
           isMoved = true;
+          space.normalizeGlobe();
         }
       });
     })
