@@ -9,7 +9,8 @@ import {
 import {
   loadMap,
   countryOverlay,
-  emptyOverlay
+  emptyOverlay,
+  heatmapOverlay
 } from '~/scripts/map/map';
 import {
   GeoDecoder
@@ -86,6 +87,11 @@ class Space {
     this.unfocusGlobe();
   }
 
+  heatmapGlobe(cities) {
+    const overlay = heatmapOverlay(cities, this.world.getOverlayMap());
+    this.world.drawOverlay(overlay);
+  }
+ 
   focusGlobeOnLatLon(latlon) {
     if (!this.isRunning) {
       this.isRunning = true;

@@ -42,6 +42,7 @@ class App {
         if (!isMoved) {
           space.watchPoint([Number(value.data.lat), Number(value.data.lng)]);
         }
+        console.log('TOTAL', this.dataService.getTotal());
         this.desk.addToTable({"flag": `<img src='https://www.countryflags.io/${value.data.country.toLowerCase()}/flat/32.png'/ alt='${value.data.country}-flag'>`, "country": value.data.country_props.name, "city": value.data.name, "datetime": (new Date).toISOString()})
         this.desk.addToMap(value.data);
       });
@@ -58,6 +59,7 @@ class App {
           this.animateToDescription();
           isMoved = true;
           space.normalizeGlobe();
+          space.heatmapGlobe(this.dataService.getTotal());
         }
       });
     })

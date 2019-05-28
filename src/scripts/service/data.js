@@ -9,7 +9,9 @@ function getRandomInt(min, max) {
 class DataService {
     constructor() {
         this.daily_items = [];
+        this.counter_items = {};
         this._daily_subs = new Set();
+        this._total_change = new Set();
     }
 
     onDailyChange(fn) {
@@ -17,9 +19,22 @@ class DataService {
         return () => this._daily_subs.delete(fn);
     }
 
+    onTotalChange(fn) {
+        this._total_change.add(fn);
+        return () => this._total_change.delete(fn);
+    }
+
     addItem(item) {
         this.daily_items.push(item);
-        this._daily_subs.forEach(fn => fn({event: 'add', data: item}))
+        const key = `${item.country}:${item.name}`;
+        const c = this.counter_items[key];
+        this.counter_items[key] = c ? {...c, count: c.count + item.count} : {...item, count: item.count};
+        this._daily_subs.forEach(fn => fn({event: 'add', data: item}));
+        this._total_change.forEach(fn => fn(this.getTotal()))
+    }
+
+    getTotal() {
+        return Object.values(this.counter_items);
     }
 
     emulate() {
@@ -29,7 +44,7 @@ class DataService {
                 setInterval(() => {
                     const city = cities[getRandomInt(0, TOTAL)];
                     const country = countries[city.country];
-                    this.addItem({...city, country_props: country});
+                    this.addItem({...city, country_props: country, count: getRandomInt(1, 3)});
                 }, 3000)
             })
     }
