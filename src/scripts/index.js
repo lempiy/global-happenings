@@ -54,11 +54,13 @@ class App {
         e.preventDefault();
         if (isMoved) {
           this.animateFromDescription();
+          space.worldMain();
           isMoved = false;
         } else {
           this.animateToDescription();
           isMoved = true;
           space.normalizeGlobe();
+          space.worldAlternative();
           space.heatmapGlobe(this.dataService.getTotal());
         }
       });

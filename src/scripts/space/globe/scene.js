@@ -62,7 +62,7 @@ export class World {
     this.baseLayer.addEventListener("click", e => console.log("click", e));
     this.root = new Object3D();
     this.root.add(this.baseLayer);
-
+    this.worldOverlay = mapCanvas;
     this.mapTexture = new Texture(mapCanvas);
     this.mapTexture.needsUpdate = true;
 
@@ -106,6 +106,17 @@ export class World {
 
   getOverlayMap() {
     return this.overlayMap;
+  }
+
+  getWorldMap() {
+    return this.worldOverlay;
+  }
+
+  drawWorld() {
+    if (this.worldOverlay) {
+      this.mapTexture.needsUpdate = true;
+      return;
+    }
   }
 
   drawOverlay(map) {

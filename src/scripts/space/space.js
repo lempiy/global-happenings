@@ -8,6 +8,7 @@ import {
 } from '~/scripts/space/globe';
 import {
   loadMap,
+  worldOverlay,
   countryOverlay,
   emptyOverlay,
   heatmapOverlay
@@ -59,10 +60,10 @@ class Space {
     this.renderer.domElement.classList.add('canvas-3d');
     document.body.appendChild(this.renderer.domElement);
     this.watchResize();
-    const {worldTexture, countries} = data;
+    const {countries} = data;
+    this.worldTexture = worldOverlay(countries, '#ff5607');
     this.countries = countries;
-    this.worldTexture = worldTexture;
-    this.world = new World(worldTexture);
+    this.world = new World(this.worldTexture);
     this.decoder = new GeoDecoder(countries.features);
     listenMouseEvents(this.camera, [this.world.baseLayer], 'click');
     // debug clicks
@@ -70,6 +71,16 @@ class Space {
       let latlon = getEventCenter.call(this.world.baseLayer, e);
     });
     this.render();
+  }
+
+  worldMain() {
+    this.worldTexture = worldOverlay(this.countries, '#ff5607', this.world.getWorldMap());
+    this.world.drawWorld();
+  }
+
+  worldAlternative() {
+    this.worldTexture = worldOverlay(this.countries, '#ffffff', this.world.getWorldMap());
+    this.world.drawWorld();
   }
 
   watchPoint(latlon) {

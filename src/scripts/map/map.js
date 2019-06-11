@@ -15,6 +15,10 @@ export const loadMap = () => json('public/data/world.json').then(data => {
   return {worldTexture, countries, topology: data};
 });
 
+export const worldOverlay = (countries, color, canvas) => {
+  return mapTexture(countries, color, canvas);
+};
+
 export const countryOverlay = (country, color, canvas) => {
   return mapTexture(country.geometry, color, canvas);
 };
