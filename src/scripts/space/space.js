@@ -31,6 +31,7 @@ import {
   listenMouseEvents
 }
 from '~/scripts/space/utils/events.js';
+import { throws } from 'assert';
 
 export const GLOBE_STATE_LEFT = 'LEFT';
 export const CLOBE_STATE_CENTER = 'CENTER';
@@ -71,6 +72,10 @@ class Space {
       let latlon = getEventCenter.call(this.world.baseLayer, e);
     });
     this.render();
+  }
+
+  getRotateGlobeTween() {
+    return this.world.getRotateGlobeTween()
   }
 
   worldMain() {

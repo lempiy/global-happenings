@@ -26,7 +26,7 @@ import {
 import { glowMaterial, particleMaterial } from "~/scripts/space/globe/shaders";
 import { camera } from "~/scripts/space/globe/camera";
 import { TweenLite } from "gsap/TweenLite";
-import { Sine, Back } from "gsap";
+import { Sine, Linear } from "gsap";
 
 let root;
 
@@ -187,8 +187,29 @@ export class World {
     });
   }
 
+  getRotateGlobeTween() {
+    return [
+      {
+        turnX: this.root.rotation.x,
+        turnY: this.root.rotation.y,
+      },
+      5,
+      {
+
+        ease: Linear.easeNone,
+        turnX: 0,
+        turnY: this.root.rotation.y + Math.PI*2,
+        onUpdate: this.onTurnUpdate
+      }
+    ];
+  }
+
   onTurnUpdate() {
-    root.rotation.y = this.target.turnY;
-    root.rotation.x = this.target.turnX;
+    if (this.target.turnY) {
+      root.rotation.y = this.target.turnY;
+    }
+    if (this.target.turnX) {
+      root.rotation.x = this.target.turnX;
+    }
   }
 }

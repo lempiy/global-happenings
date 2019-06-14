@@ -25,6 +25,7 @@ const STATE_FOCUS_ON_TABLE = 'TABLE';
 class App {
   constructor(space) {
     this.currentTimeline = null;
+    this.rotationGlobTimeline = null;
     this.space = space;
     this.dataService = dataService;
   }
@@ -49,6 +50,14 @@ class App {
 
       this.timelineTable = new TimelineLite({ paused: true });
       this.setupDescriptionAnimation();
+      this.rotationGlobTimeline = new TimelineLite({ 
+        paused: true, 
+        onComplete: function() {
+          this.restart();
+        }
+      });
+      this.rotationGlobTimeline.to(...this.space.getRotateGlobeTween())
+
 
       document.body.addEventListener('contextmenu', (e) => {
         e.preventDefault();
@@ -78,9 +87,11 @@ class App {
   animateToDescription() {
     if (this.currentTimeline && this.currentTimeline.isActive()) {
         this.currentTimeline.pause();
+        this.rotationGlobTimeline.pause();
     };
     this.currentTimeline = this.timelineDescription;
     this.currentTimeline.restart();
+    this.rotationGlobTimeline.restart();
   }
 
   animateFromDescription() {
@@ -89,6 +100,7 @@ class App {
     };
     this.currentTimeline = this.timelineDescription;
     this.currentTimeline.reverse();
+    this.rotationGlobTimeline.pause();
   }
 } 
 
