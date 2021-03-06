@@ -44,7 +44,7 @@
     "@tweenjs/tween.js": "^17.3.0",
     "d3": "^5.9.2",
     "eslint-plugin-vue": "^5.2.2",
-    "gsap": "^2.1.2",
+    "gsap": "^3.6.0",
     "three": "^0.125.0",
     "topojson": "^3.0.2"
   }
